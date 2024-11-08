@@ -1,0 +1,7 @@
+__pycache__/
+venv/
+DateRecord/*.csv
+DateRecord/*.png
+lineToken.txt
+localStorage.db
+discordToken.txt
