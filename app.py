@@ -7,36 +7,70 @@ import pyautogui
 import os
 import glob
 import requests
+import argparse
 
-FOLDER_PATH = r"C:\Users\User\Pictures\Screenshots"
+FOLDER_PATH = r"screenData"
+SCREEN_TIMES = 1
 
 
 def start():
     pass
     while True:
-        # if (
-        #    time.localtime(time.time()).tm_hour >= 9
-        #    and time.localtime(time.time()).tm_hour < 14
-        # ):
-        if True:
+        if (
+            time.localtime(time.time()).tm_hour >= 9
+            and time.localtime(time.time()).tm_hour <= 13
+        ):
+            # if True:
+            if (
+                time.localtime(time.time()).tm_hour == 13
+                and time.localtime(time.time()).tm_min >= 31
+            ):
+                break
             pass
-            if time.localtime(time.time()).tm_min % 5 == 0:
+            if (
+                time.localtime(time.time()).tm_min % 5 == 0
+                and time.localtime(time.time()).tm_sec == 0
+            ):
                 #  電腦要自動截圖
                 print("we will run the upload")
-                pyautogui.hotkey("printscreen")
-                time.sleep(1)
-                for i in range(3):
-                    pyautogui.hotkey("tab")
-                    time.sleep(0.1)
-                pyautogui.hotkey("enter")
-                time.sleep(0.1)
-                for i in range(2):
-                    pyautogui.hotkey("down")
-                    time.sleep(0.1)
-                pyautogui.hotkey("enter")
-                time.sleep(1)
-                upload_to_dc()
-                pass
+                # pyautogui.hotkey("printscreen")
+                # time.sleep(1)
+                # for i in range(3):
+                #     pyautogui.hotkey("tab")
+                #     time.sleep(0.1)
+                # pyautogui.hotkey("enter")
+                # time.sleep(0.1)
+                # for i in range(2):
+                #     pyautogui.hotkey("down")
+                #     time.sleep(0.1)
+                # pyautogui.hotkey("enter")
+                # time.sleep(1)
+
+                # 一次截全部太大會有解析度問題
+                # 應情況分開截
+                for i in range(SCREEN_TIMES):
+                    os.makedirs("screenData", exist_ok=True)
+                    screenshot = pyautogui.screenshot()
+                    screenName = (
+                        r"screenData\\"
+                        + str(time.localtime(time.time()).tm_hour)
+                        + "_"
+                        + str(time.localtime(time.time()).tm_min)
+                        + str(time.localtime(time.time()).tm_sec)
+                        + r"_screen.png"
+                    )
+                    screenshot.save(screenName)
+                    upload_to_dc()
+                    pass
+                    if SCREEN_TIMES != i + 1:
+                        # 換到下一個畫面
+                        switch_desktop("right")
+                        time.sleep(1)
+
+                # 畫面截完要換回來
+                if SCREEN_TIMES != 1:
+                    for i in range(SCREEN_TIMES):
+                        switch_desktop("left")
         elif time.localtime((time.time())).tm_hour >= 14:
             break
         print(
@@ -44,8 +78,11 @@ def start():
             + str(time.localtime(time.time()).tm_hour)
             + ":"
             + str(time.localtime(time.time()).tm_min)
+            + ":"
+            + str(time.localtime(time.time()).tm_sec)
+            + " sleep until next 5 min"
         )
-        time.sleep(60)
+        time.sleep(1)
 
 
 def upload_to_dc():
@@ -59,15 +96,14 @@ def upload_to_dc():
         "connent": "this stock image has upload complete",
         "username": "Python bot",
     }
-    files = {}
     with open(str(get_image_path()), "rb") as imageFile:
         files = {"imageFile": ("image.png", imageFile)}
-    response = requests.post(focusToken, data=data, files=files)  # 使用 POST 方法
-    if response.status_code == 204:
-        pass
-    else:
-        print("have something error in save image")
-        print(response.text)
+        response = requests.post(focusToken, data=data, files=files)  # 使用 POST 方法
+        if response.status_code == 204 or response.status_code == 200:
+            pass
+        else:
+            print("have something error in save image")
+            print(response.status_code)
     pass
 
 
@@ -77,9 +113,32 @@ def get_image_path():
     if not files:
         return None
     latestFile = max(files, key=os.path.getctime)
-    allPath = FOLDER_PATH + "\\" + latestFile
-    return os.path.basename(allPath)
+
+    return latestFile
+
+
+def shot_time_check():
+    global SCREEN_TIMES
+    parser = argparse.ArgumentParser(description="setting times that I need screenshot")
+    parser.add_argument("-T", type=int, help="set int type for screenshot times")
+
+    args = parser.parse_args()
+
+    if args.T is not None:
+        SCREEN_TIMES = args.T
+    pass
+
+
+def switch_desktop(var):
+    pyautogui.keyDown("win")
+    pyautogui.keyDown("ctrl")
+
+    pyautogui.press(var)
+
+    pyautogui.keyUp("win")
+    pyautogui.keyUp("ctrl")
 
 
 if __name__ == "__main__":
+    shot_time_check()
     start()
