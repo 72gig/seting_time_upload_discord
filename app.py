@@ -11,6 +11,7 @@ import argparse
 
 FOLDER_PATH = r"screenData"
 SCREEN_TIMES = 1
+TIME_SETTING = 5
 
 
 def start():
@@ -28,7 +29,7 @@ def start():
                 break
             pass
             if (
-                time.localtime(time.time()).tm_min % 5 == 0
+                time.localtime(time.time()).tm_min % TIME_SETTING == 0
                 and time.localtime(time.time()).tm_sec == 0
             ):
                 #  電腦要自動截圖
@@ -80,7 +81,9 @@ def start():
             + str(time.localtime(time.time()).tm_min)
             + ":"
             + str(time.localtime(time.time()).tm_sec)
-            + " sleep until next 5 min"
+            + " sleep until next "
+            + str(TIME_SETTING)
+            + " min"
         )
         time.sleep(1)
 
@@ -119,13 +122,17 @@ def get_image_path():
 
 def shot_time_check():
     global SCREEN_TIMES
+    global TIME_SETTING
     parser = argparse.ArgumentParser(description="setting times that I need screenshot")
-    parser.add_argument("-T", type=int, help="set int type for screenshot times")
+    parser.add_argument("-S", type=int, help="set int type for screenshot times")
+    parser.add_argument("-T", type=int, help="set int type for screenshot delay min")
 
     args = parser.parse_args()
 
+    if args.S is not None:
+        SCREEN_TIMES = args.S
     if args.T is not None:
-        SCREEN_TIMES = args.T
+        TIME_SETTING = args.T
     pass
 
 
