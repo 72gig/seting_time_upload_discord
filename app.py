@@ -18,7 +18,7 @@ def start():
     pass
     while True:
         if (
-            time.localtime(time.time()).tm_hour >= 9
+            time.localtime(time.time()).tm_hour >= 8
             and time.localtime(time.time()).tm_hour <= 13
         ):
             # if True:
@@ -27,7 +27,7 @@ def start():
                 and time.localtime(time.time()).tm_min >= 31
             ):
                 break
-            pass
+            # pass
             if (
                 time.localtime(time.time()).tm_min % TIME_SETTING == 0
                 and time.localtime(time.time()).tm_sec == 0
@@ -72,6 +72,7 @@ def start():
                 if SCREEN_TIMES != 1:
                     for i in range(SCREEN_TIMES):
                         switch_desktop("left")
+                        time.sleep(1)
         elif time.localtime((time.time())).tm_hour >= 14:
             break
         print(
