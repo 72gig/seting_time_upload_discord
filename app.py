@@ -54,6 +54,12 @@ def start():
                     screenshot = pyautogui.screenshot()
                     screenName = (
                         r"screenData\\"
+                        + str(time.localtime(time.time()).tm_year)
+                        + "_"
+                        + str(time.localtime(time.time()).tm_mon)
+                        + "_"
+                        + str(time.localtime(time.time()).tm_mday)
+                        + "_"
                         + str(time.localtime(time.time()).tm_hour)
                         + "_"
                         + str(time.localtime(time.time()).tm_min)
@@ -86,7 +92,7 @@ def start():
             + str(TIME_SETTING)
             + " min"
         )
-        time.sleep(1)
+        time.sleep(0.9)
 
 
 def upload_to_dc():
