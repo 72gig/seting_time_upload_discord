@@ -34,18 +34,6 @@ def start():
             ):
                 #  電腦要自動截圖
                 print("we will run the upload")
-                # pyautogui.hotkey("printscreen")
-                # time.sleep(1)
-                # for i in range(3):
-                #     pyautogui.hotkey("tab")
-                #     time.sleep(0.1)
-                # pyautogui.hotkey("enter")
-                # time.sleep(0.1)
-                # for i in range(2):
-                #     pyautogui.hotkey("down")
-                #     time.sleep(0.1)
-                # pyautogui.hotkey("enter")
-                # time.sleep(1)
 
                 # 一次截全部太大會有解析度問題
                 # 應情況分開截
@@ -97,7 +85,7 @@ def start():
 
 def upload_to_dc():
     # 抓截圖的檔案到DC去
-
+    # DC 需要聊天室的 TOKEN 才能夠傳上去
     focusPath = r"discordToken.txt"
     if not os.path.isfile(focusPath):
         open(focusPath, "w").close()  # 如果沒有則建立檔案
